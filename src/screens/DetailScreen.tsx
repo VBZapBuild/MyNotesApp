@@ -8,13 +8,15 @@ import {
 } from 'react-native';
 import { RootStackParamList } from '../navigation/navigation';
 import { StackScreenProps } from '@react-navigation/stack';
-import FAB from 'react-native-fab'
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch } from 'react-redux';
+import { updateTask} from '../reducer/taskState'
+import ListScreen from './ListScreen';
 
 type Props = StackScreenProps<RootStackParamList, 'detail'>;
 
 export default function DetailScreen({ route, navigation }: Props) {
     console.log(route.params, "this is navi")
+    const dispatch = useDispatch()   
     let { data } = route.params;
     let [title, setTitle] = useState(data.title);
     let [desc, setDesc] = useState(data.desc);
@@ -24,6 +26,12 @@ export default function DetailScreen({ route, navigation }: Props) {
     }
     const onSave = () => {
         console.log("onSave is called")
+        dispatch(updateTask(data.index, {
+            title:title,
+            desc:desc,
+            index:data.index,
+        }))
+        navigation.navigate('list')
     }
     return (
         <View style={styles.container}>

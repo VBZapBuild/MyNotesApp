@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import {
   Text,
   TextInput,
@@ -11,13 +11,24 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Task from '../components/Task';
+import { useSelector, useDispatch } from 'react-redux';
+import { addTask, deleteTask } from '../reducer/taskState'
 interface iTask {
+  index: number,
   title: string;
   desc: string;
 }
-
-
 export default function ListScreen({ navigation }: any) {
+const tasks = useSelector(state => state)
+const dispatch = useDispatch()
+
+// const addTask= task => {
+//   console.log(task)
+//   dispatch('ADD_TASK');
+// }
+// const deleteTask = id => dispatch(deleteTask(id))
+
+
   const [task, setTask] = useState<iTask>();
   const [taskItems, setTaskItems] = useState<Array<iTask>>([]);
   // so that array of tasks appear
@@ -30,8 +41,10 @@ export default function ListScreen({ navigation }: any) {
       setTaskItems(taskItems => [...taskItems, task])
       setTask({
         title: '',
-        desc: ''
+        desc: '',
+        index: taskItems.length,
       });
+      dispatch(addTask(task));
     }
 
   }
@@ -40,22 +53,24 @@ export default function ListScreen({ navigation }: any) {
     itemsCopy.splice(index, 1);
     // navigation -> you can pass props -> taskItems[index] 
     setTaskItems(itemsCopy);
+    dispatch(deleteTask(index))
   }
 
   const moveToDetail = (index: number) => {
     console.log(index, taskItems, taskItems[index]);
     navigation.navigate('detail', {
-      data: taskItems[index]
+      data: taskItems[index],
+      index: index
     });
   }
 
   const onTextChange = (text: string) => {
     console.log(text);
-    setTask({...task, title:text ,desc : '' });
+    setTask({ ...task, title: text, desc: '',index:0 });
   }
 
   return (
-  
+
     <View style={styles.container}>
       <View style={styles.tasksWrapper}>
         <Text style={styles.sectionTitle}> Add Notes</Text>
@@ -87,7 +102,7 @@ export default function ListScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4169e1',
+    backgroundColor: '#dc143c',
   },
   tasksWrapper: {
     paddingTop: 80,
