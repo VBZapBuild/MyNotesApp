@@ -4,14 +4,16 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 const Task = (props: any) => {
 
     console.log(props,"this is task props")
+    let {data ,index,onComplete} = props;
+
 
     return (
         <View style={styles.item}>
             <View style={styles.itemLeft}>
                 <TouchableOpacity style={styles.square}></TouchableOpacity>
-                <Text style={styles.itemText}>{props.text}</Text>
+                <Text style={styles.itemTitle}>{data.title}</Text>
             </View>
-            <TouchableOpacity onPress={() => props.onComplete(props.index)}>
+            <TouchableOpacity onPress={() => onComplete(index)}>
             <Text style={{fontSize:25,color:'red'}}>X</Text>
             </TouchableOpacity>
         </View>
@@ -42,7 +44,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginRight: 15,
     },
-    itemText: {
+    itemTitle: {
         maxWidth: '80%',
         color: 'black',
         fontSize: 23

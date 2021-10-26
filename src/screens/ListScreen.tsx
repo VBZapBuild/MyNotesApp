@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import {
   Text,
   TextInput,
@@ -7,23 +7,31 @@ import {
   Keyboard,
   TouchableOpacity,
   Platform,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
-import Task from '../components/Task';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Task from '../components/Task';
+interface iTask {
+  title: string;
+  desc: string;
+}
+
 
 export default function ListScreen({ navigation }: any) {
-  const [task, setTask] = useState<string>('');
-  const [taskItems, setTaskItems] = useState<Array<string>>([]);
+  const [task, setTask] = useState<iTask>();
+  const [taskItems, setTaskItems] = useState<Array<iTask>>([]);
   // so that array of tasks appear
   const handleAddTask = () => {
     // this function will log the task in the state
     console.log("crent task", task)
 
-    if (task.length) {
+    if (task?.title) {
       Keyboard.dismiss();
       setTaskItems(taskItems => [...taskItems, task])
-      setTask('');
+      setTask({
+        title: '',
+        desc: ''
+      });
     }
 
   }
@@ -41,23 +49,23 @@ export default function ListScreen({ navigation }: any) {
     });
   }
 
-  const onTextChange = (task: string) => {
-    console.log(task);
-    setTask(task);
+  const onTextChange = (text: string) => {
+    console.log(text);
+    setTask({...task, title:text ,desc : '' });
   }
 
   return (
-
+  
     <View style={styles.container}>
       <View style={styles.tasksWrapper}>
-        <Text style={styles.sectionTitle}>Your Tasks For Today</Text>
+        <Text style={styles.sectionTitle}> Add Notes</Text>
         <View style={styles.items}>
           {/* all tasks will be added here  */}
           {
-            taskItems.map((item: any, index: number) => {
+            taskItems.map((item: iTask, index: number) => {
               return (
                 <TouchableOpacity key={index} onPress={() => moveToDetail(index)}>
-                  <Task text={item} onComplete={completeTask} index={index} />
+                  <Task data={item} onComplete={completeTask} index={index} />
                 </TouchableOpacity>)
             })
           }
@@ -66,7 +74,7 @@ export default function ListScreen({ navigation }: any) {
       <KeyboardAvoidingView
         behavior={Platform.OS === "android" ? "padding" : "height"}
         style={styles.writeTaskWrapper} >
-        <TextInput style={styles.input} placeholder={'write a task'} value={task} onChangeText={onTextChange} />
+        <TextInput style={styles.input} placeholder={'write a task'} value={task?.title} onChangeText={onTextChange} />
         <TouchableOpacity onPress={handleAddTask}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
@@ -79,7 +87,7 @@ export default function ListScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#b0c4de',
+    backgroundColor: '#4169e1',
   },
   tasksWrapper: {
     paddingTop: 80,
