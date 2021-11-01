@@ -2,10 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 const Task = (props: any) => {
-
-    console.log(props,"this is task props")
     let {data ,index,onComplete} = props;
-
 
     return (
         <View style={styles.item}>

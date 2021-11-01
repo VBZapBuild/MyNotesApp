@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   TextInput,
@@ -12,39 +12,49 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Task from '../components/Task';
 import { useSelector, useDispatch } from 'react-redux';
-import { addTask, deleteTask } from '../reducer/taskState'
+import { addTask, deleteTask } from '../reducer/taskState';
+import store from '../reducer/store';
 interface iTask {
   index: number,
   title: string;
   desc: string;
 }
 export default function ListScreen({ navigation }: any) {
-const tasks = useSelector(state => state)
+//const tasks = useSelector(state => state)
 const dispatch = useDispatch()
-
+let storeData = store.getState();
 // const addTask= task => {
 //   console.log(task)
 //   dispatch('ADD_TASK');
 // }
 // const deleteTask = id => dispatch(deleteTask(id))
 
-
+  //console.log(tasks,'from use selector')
   const [task, setTask] = useState<iTask>();
   const [taskItems, setTaskItems] = useState<Array<iTask>>([]);
+  // 
+
+  // useEffect(()=>{
+  //   setTaskItems(storeData);
+  // },[]);
   // so that array of tasks appear
   const handleAddTask = () => {
     // this function will log the task in the state
     console.log("crent task", task)
-
+    
     if (task?.title) {
       Keyboard.dismiss();
-      setTaskItems(taskItems => [...taskItems, task])
+      setTaskItems([...taskItems, task])
+      dispatch(addTask({
+        title:task.title,
+        desc:task.desc,
+        index: taskItems.length
+      }));
       setTask({
         title: '',
         desc: '',
         index: taskItems.length,
       });
-      dispatch(addTask(task));
     }
 
   }
@@ -60,12 +70,10 @@ const dispatch = useDispatch()
     console.log(index, taskItems, taskItems[index]);
     navigation.navigate('detail', {
       data: taskItems[index],
-      index: index
     });
   }
 
   const onTextChange = (text: string) => {
-    console.log(text);
     setTask({ ...task, title: text, desc: '',index:0 });
   }
 

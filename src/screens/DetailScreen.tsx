@@ -11,26 +11,33 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { useDispatch } from 'react-redux';
 import { updateTask} from '../reducer/taskState'
 import ListScreen from './ListScreen';
+import store from '../reducer/store';
 
 type Props = StackScreenProps<RootStackParamList, 'detail'>;
 
 export default function DetailScreen({ route, navigation }: Props) {
-    console.log(route.params, "this is navi")
-    const dispatch = useDispatch()   
+    console.log(store.getState(), "this is store object")
+    const dispatch = useDispatch()
     let { data } = route.params;
+    let storeData = store.getState();
     let [title, setTitle] = useState(data.title);
     let [desc, setDesc] = useState(data.desc);
+    console.log("indsdeaidnsdi" ,title,desc)
     const onTextChange = (title: string) => {
         console.log(title);
         setTitle(title);
     }
+    const onDescChange = (desc: string) => {
+        setDesc(desc);
+    }
     const onSave = () => {
-        console.log("onSave is called")
+        console.log("onSave is called",data)
         dispatch(updateTask(data.index, {
             title:title,
             desc:desc,
             index:data.index,
-        }))
+        }
+        ))
         navigation.navigate('list')
     }
     return (
@@ -45,9 +52,9 @@ export default function DetailScreen({ route, navigation }: Props) {
                 <TextInput
                     placeholder="Add Note Description"
                     value={desc}
-                    onChangeText={(des) => setDesc(des)}
+                    onChangeText={onDescChange}
                     multiline={true}
-                    style={styles.text}
+                   style={styles.text}
                     scrollEnabled={true}
                     returnKeyLabel='done'
                     blurOnSubmit={true}
