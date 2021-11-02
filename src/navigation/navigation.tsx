@@ -1,17 +1,18 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ListScreen from '../screens/ListScreen';
+
 import DetailScreen from '../screens/DetailScreen';
+import ListScreen from '../screens/ListScreen';
 
 export type RootStackParamList = {
     list: undefined,
-    detail: 
+    detail:
     {
         data: any,
-        add :any
+        add: any
     }
-  };
+};
 
 
 
@@ -24,7 +25,7 @@ const Navigation = () => {
                 screenOptions={{
                     headerShown: false
                 }}>
-                
+
                 <Stack.Screen name="list" component={ListScreen} />
                 <Stack.Screen name="detail" component={DetailScreen} />
             </Stack.Navigator>

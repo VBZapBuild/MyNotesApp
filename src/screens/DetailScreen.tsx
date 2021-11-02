@@ -9,9 +9,9 @@ import {
 import { RootStackParamList } from '../navigation/navigation';
 import { StackScreenProps } from '@react-navigation/stack';
 import { useDispatch } from 'react-redux';
-import { updateTask} from '../reducer/taskState'
+import { updateTask } from '../redux/taskState'
 import ListScreen from './ListScreen';
-import store from '../reducer/store';
+import store from '../redux/store';
 
 type Props = StackScreenProps<RootStackParamList, 'detail'>;
 
@@ -22,7 +22,7 @@ export default function DetailScreen({ route, navigation }: Props) {
     let storeData = store.getState();
     let [title, setTitle] = useState(data.title);
     let [desc, setDesc] = useState(data.desc);
-    console.log("indsdeaidnsdi" ,title,desc)
+    console.log("indsdeaidnsdi", title, desc)
     const onTextChange = (title: string) => {
         console.log(title);
         setTitle(title);
@@ -31,37 +31,37 @@ export default function DetailScreen({ route, navigation }: Props) {
         setDesc(desc);
     }
     const onSave = () => {
-        console.log("onSave is called",data)
+        console.log("onSave is called", data)
         dispatch(updateTask(data.index, {
-            title:title,
-            desc:desc,
-            index:data.index,
+            title: title,
+            desc: desc,
+            index: data.index,
         }
         ))
         navigation.navigate('list')
     }
     return (
         <View style={styles.container}>
-                <StatusBar backgroundColor='#b0c4de' barStyle="light-content" />
-                <TextInput
-                    placeholder="Add Note Title here"
-                    value={title}
-                    onChangeText={onTextChange}
-                    style={styles.title}
-                />
-                <TextInput
-                    placeholder="Add Note Description"
-                    value={desc}
-                    onChangeText={onDescChange}
-                    multiline={true}
-                   style={styles.text}
-                    scrollEnabled={true}
-                    returnKeyLabel='done'
-                    blurOnSubmit={true}
-                />
-            <Button 
-            title= "SAVE"
-            onPress={onSave}
+            <StatusBar backgroundColor='#b0c4de' barStyle="light-content" />
+            <TextInput
+                placeholder="Add Note Title here"
+                value={title}
+                onChangeText={onTextChange}
+                style={styles.title}
+            />
+            <TextInput
+                placeholder="Add Note Description"
+                value={desc}
+                onChangeText={onDescChange}
+                multiline={true}
+                style={styles.text}
+                scrollEnabled={true}
+                returnKeyLabel='done'
+                blurOnSubmit={true}
+            />
+            <Button
+                title="SAVE"
+                onPress={onSave}
             />
         </View>
     );

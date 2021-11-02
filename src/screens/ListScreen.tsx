@@ -9,45 +9,26 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Task from '../components/Task';
 import { useSelector, useDispatch } from 'react-redux';
-import { addTask, deleteTask } from '../reducer/taskState';
-import store from '../reducer/store';
-interface iTask {
-  index: number,
-  title: string;
-  desc: string;
-}
-export default function ListScreen({ navigation }: any) {
-//const tasks = useSelector(state => state)
-const dispatch = useDispatch()
-let storeData = store.getState();
-// const addTask= task => {
-//   console.log(task)
-//   dispatch('ADD_TASK');
-// }
-// const deleteTask = id => dispatch(deleteTask(id))
 
-  //console.log(tasks,'from use selector')
-  const [task, setTask] = useState<iTask>();
-  const [taskItems, setTaskItems] = useState<Array<iTask>>([]);
-  // 
+export default function ListScreen() {
 
-  // useEffect(()=>{
-  //   setTaskItems(storeData);
-  // },[]);
+  const tasks = useSelector(state => state)
+  const dispatch = useDispatch()
+
+  console.log(tasks, "check")
+
+  const [input, setInput] = useState("")
+
   // so that array of tasks appear
-  const handleAddTask = () => {
+  const handleAddTask = (task) => {
     // this function will log the task in the state
-    console.log("crent task", task)
-    
     if (task?.title) {
       Keyboard.dismiss();
-      setTaskItems([...taskItems, task])
       dispatch(addTask({
-        title:task.title,
-        desc:task.desc,
+        title: task.title,
+        desc: task.desc,
         index: taskItems.length
       }));
       setTask({
@@ -56,36 +37,35 @@ let storeData = store.getState();
         index: taskItems.length,
       });
     }
-
-  }
-  const completeTask = (index: number) => {
-    let itemsCopy = [...taskItems];
-    itemsCopy.splice(index, 1);
-    // navigation -> you can pass props -> taskItems[index] 
-    setTaskItems(itemsCopy);
-    dispatch(deleteTask(index))
   }
 
-  const moveToDetail = (index: number) => {
-    console.log(index, taskItems, taskItems[index]);
-    navigation.navigate('detail', {
-      data: taskItems[index],
-    });
-  }
+  // const completeTask = (index) => {
+  //   let itemsCopy = [...taskItems];
+  //   itemsCopy.splice(index, 1);
+  //   // navigation -> you can pass props -> taskItems[index] 
+  //   setTaskItems(itemsCopy);
+  //   dispatch(deleteTask(index))
+  // }
 
-  const onTextChange = (text: string) => {
-    setTask({ ...task, title: text, desc: '',index:0 });
+  // const moveToDetail = (index: number) => {
+  //   console.log(index, taskItems, taskItems[index]);
+  //   navigation.navigate('detail', {
+  //     data: taskItems[index],
+  //   });
+  // }
+
+  const onTextChange = (text) => {
+    setInput(text)
   }
 
   return (
-
     <View style={styles.container}>
       <View style={styles.tasksWrapper}>
         <Text style={styles.sectionTitle}> Add Notes</Text>
         <View style={styles.items}>
           {/* all tasks will be added here  */}
           {
-            taskItems.map((item: iTask, index: number) => {
+            tasks.map((item, index) => {
               return (
                 <TouchableOpacity key={index} onPress={() => moveToDetail(index)}>
                   <Task data={item} onComplete={completeTask} index={index} />
@@ -97,7 +77,13 @@ let storeData = store.getState();
       <KeyboardAvoidingView
         behavior={Platform.OS === "android" ? "padding" : "height"}
         style={styles.writeTaskWrapper} >
-        <TextInput style={styles.input} placeholder={'write a task'} value={task?.title} onChangeText={onTextChange} />
+
+        <TextInput
+          style={styles.input}
+          placeholder={'write a task'}
+          value={input}
+          onChangeText={onTextChange} />
+
         <TouchableOpacity onPress={handleAddTask}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
