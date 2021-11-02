@@ -1,6 +1,6 @@
 import { ADD_TASK, DELETE_TASK } from "./actions";
 
-const initialState = []
+const initialState = [{ title: "knfkenw", id: 1 }]
 
 function taskReducer(state = initialState, action) {
     console.log(state, action, "this is state and action");

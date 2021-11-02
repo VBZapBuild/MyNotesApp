@@ -1,37 +1,39 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Text,
-  View,
   StyleSheet,
   Button,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function CounterScreen() {
 
-    let [count,setCount] = useState(0)
+  const count = useSelector(state => state.count.count)
+  const dispatch = useDispatch()
 
-    const handleIncCounter = () => {
-        setCount(++count);
-    }
+  const handleIncCounter = () => {
+    dispatch({ type: 'INCREMENT' })
+  }
 
-    const handleDecCounter = () => {
-        setCount(--count);
-    }
+  const handleDecCounter = () => {
+    dispatch({ type: 'DECREMENT' })
+  }
 
-    const handleResetCounter = () => {
-        setCount(0);
-    }
+  const handleResetCounter = () => {
+
+  }
 
   return (
-
-    <View style={styles.container}>
-     <Text style={styles.sectionTitle}>Counter value : {count}</Text>
-     <Button color="green" title="inc counter" onPress={handleIncCounter}></Button> 
-     <Button color="blue" title="dec counter" onPress={handleDecCounter}></Button> 
-     <Button color="pink" title="reset counter" onPress={handleResetCounter}></Button> 
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.sectionTitle}>Counter value : {count}</Text>
+      <Button color="green" title="inc counter" onPress={handleIncCounter}></Button>
+      <Button color="blue" title="dec counter" onPress={handleDecCounter}></Button>
+      <Button color="pink" title="reset counter" onPress={handleResetCounter}></Button>
+    </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
