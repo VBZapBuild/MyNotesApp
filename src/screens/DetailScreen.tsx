@@ -8,21 +8,20 @@ import {
 } from 'react-native';
 import { RootStackParamList } from '../navigation/navigation';
 import { StackScreenProps } from '@react-navigation/stack';
-import { useDispatch } from 'react-redux';
-import { updateTask} from '../reducer/taskState'
+import { useDispatch, useSelector } from 'react-redux';
+import { UPDATE_TASK} from '../reducer/taskState'
 import ListScreen from './ListScreen';
 import store from '../reducer/store';
 
 type Props = StackScreenProps<RootStackParamList, 'detail'>;
 
 export default function DetailScreen({ route, navigation }: Props) {
-    console.log(store.getState(), "this is store object")
-    const dispatch = useDispatch()
-    let { data } = route.params;
-    let storeData = store.getState();
-    let [title, setTitle] = useState(data.title);
-    let [desc, setDesc] = useState(data.desc);
-    console.log("indsdeaidnsdi" ,title,desc)
+    const taskDetail = useSelector(state => state)
+    const dispatch = useDispatch();
+    let { index } = route.params;
+    let [title, setTitle] = useState(taskDetail[index].title);
+    let [desc, setDesc] = useState(taskDetail[index].desc);
+    console.log("indsdeaidnsdi" ,taskDetail,index)
     const onTextChange = (title: string) => {
         console.log(title);
         setTitle(title);
@@ -31,13 +30,13 @@ export default function DetailScreen({ route, navigation }: Props) {
         setDesc(desc);
     }
     const onSave = () => {
-        console.log("onSave is called",data)
-        dispatch(updateTask(data.index, {
+        console.log("onSave is called",index)
+        dispatch({
+            type : UPDATE_TASK,
             title:title,
             desc:desc,
-            index:data.index,
-        }
-        ))
+            index:index,
+        })
         navigation.navigate('list')
     }
     return (

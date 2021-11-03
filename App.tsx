@@ -10,7 +10,7 @@ export type RootStackParamList = {
   list: undefined,
   detail: 
   {
-      data: any,
+      index: number,
       add :any
   }
 };
@@ -31,6 +31,18 @@ export default function App() {
     //         </Stack.Navigator>
     //     </NavigationContainer>
     // </StoreProvider>
-    <CounterScreen/>
+    <StoreProvider store = {store}>
+       <NavigationContainer>
+             <Stack.Navigator
+                 screenOptions={{
+                     headerShown: false
+                 }}>
+                
+                 <Stack.Screen name="list" component={ListScreen} />
+                 <Stack.Screen name="detail" component={DetailScreen} />
+             </Stack.Navigator>
+         </NavigationContainer>
+    </StoreProvider>
+    
   );
 }

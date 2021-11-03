@@ -12,7 +12,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Task from '../components/Task';
 import { useSelector, useDispatch } from 'react-redux';
-import { addTask, deleteTask } from '../reducer/taskState';
+import { ADD_TASK,DELETE_TASK } from '../reducer/taskState';
 import store from '../reducer/store';
 interface iTask {
   index: number,
@@ -20,61 +20,58 @@ interface iTask {
   desc: string;
 }
 export default function ListScreen({ navigation }: any) {
-//const tasks = useSelector(state => state)
+const taskItems = useSelector(state => state)
 const dispatch = useDispatch()
-let storeData = store.getState();
-// const addTask= task => {
-//   console.log(task)
-//   dispatch('ADD_TASK');
-// }
-// const deleteTask = id => dispatch(deleteTask(id))
 
-  //console.log(tasks,'from use selector')
+  console.log(taskItems,'from use selector')
   const [task, setTask] = useState<iTask>();
-  const [taskItems, setTaskItems] = useState<Array<iTask>>([]);
-  // 
 
-  // useEffect(()=>{
-  //   setTaskItems(storeData);
-  // },[]);
-  // so that array of tasks appear
   const handleAddTask = () => {
     // this function will log the task in the state
     console.log("crent task", task)
     
     if (task?.title) {
       Keyboard.dismiss();
-      setTaskItems([...taskItems, task])
-      dispatch(addTask({
+      dispatch({
+        type : ADD_TASK,
         title:task.title,
         desc:task.desc,
         index: taskItems.length
-      }));
+      });
       setTask({
         title: '',
         desc: '',
-        index: taskItems.length,
+        index: 0,
       });
     }
 
   }
   const completeTask = (index: number) => {
-    let itemsCopy = [...taskItems];
-    itemsCopy.splice(index, 1);
-    // navigation -> you can pass props -> taskItems[index] 
-    setTaskItems(itemsCopy);
-    dispatch(deleteTask(index))
+    dispatch({
+      type: DELETE_TASK,
+      index : index
+    })
   }
 
   const moveToDetail = (index: number) => {
-    console.log(index, taskItems, taskItems[index]);
     navigation.navigate('detail', {
-      data: taskItems[index],
+      index: index,
     });
   }
 
   const onTextChange = (text: string) => {
     setTask({ ...task, title: text, desc: '',index:0 });
+  }
+
+  const ItemList = ({taskItems}) => {
+    console.log(taskItems,'this is task items');
+    return taskItems.map((item: iTask, index: number) => {
+      console.log('this is item',item,index);
+      return (
+        <TouchableOpacity key={item.index} onPress={() => moveToDetail(item.index)}>
+          <Task data={item} onComplete={completeTask} index={item.index} />
+        </TouchableOpacity>)
+    });
   }
 
   return (
@@ -83,15 +80,7 @@ let storeData = store.getState();
       <View style={styles.tasksWrapper}>
         <Text style={styles.sectionTitle}> Add Notes</Text>
         <View style={styles.items}>
-          {/* all tasks will be added here  */}
-          {
-            taskItems.map((item: iTask, index: number) => {
-              return (
-                <TouchableOpacity key={index} onPress={() => moveToDetail(index)}>
-                  <Task data={item} onComplete={completeTask} index={index} />
-                </TouchableOpacity>)
-            })
-          }
+          <ItemList taskItems={taskItems}></ItemList>
         </View>
       </View>
       <KeyboardAvoidingView
@@ -110,7 +99,7 @@ let storeData = store.getState();
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#dc143c',
+    backgroundColor: '#000000',
   },
   tasksWrapper: {
     paddingTop: 80,
@@ -119,6 +108,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 35,
     fontWeight: 'bold',
+    color: 'white'
   },
   items: {
     marginTop: 30,
@@ -145,11 +135,11 @@ const styles = StyleSheet.create({
   addWrapper: {
     width: 60,
     height: 60,
-    backgroundColor: 'black',
+    backgroundColor: '#d3d3d3',
     borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#C0C0C0',
+    borderColor: '#b0c4de',
     borderWidth: 1,
   },
   addText: {
